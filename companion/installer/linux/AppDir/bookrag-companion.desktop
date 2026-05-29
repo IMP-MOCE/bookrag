@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=BookRAG Companion
+Comment=Local inference accelerator for BookRAG extension
+Exec=bookrag-companion
+Icon=bookrag-companion
+Terminal=false
+Categories=Utility;Development;
+StartupNotify=false

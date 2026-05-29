@@ -1,0 +1,8 @@
+#!/bin/sh
+# AppRun — точка входа AppImage. Запускается напрямую при двойном клике или
+# из терминала: ./BookRAG_Companion-x86_64.AppImage [--no-tray] [--autostart-enable] [...]
+#
+# Все аргументы пробрасываются в бинарь без модификаций.
+
+HERE="$(dirname "$(readlink -f "$0")")"
+exec "$HERE/usr/bin/bookrag-companion" "$@"

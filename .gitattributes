@@ -1,0 +1,4 @@
+# Shell scripts and Linux assets must keep LF even on Windows.
+*.sh text eol=lf
+**/AppRun text eol=lf
+*.desktop text eol=lf

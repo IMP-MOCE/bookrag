@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bookrag.local/schemas/analysis-response.json",
+  "title": "AnalysisResponse",
+  "description": "Структурированный ответ модели по одному фрагменту главы (см. листинг 2.1 отчёта).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["new_entities", "operations", "collision_candidates"],
+  "properties": {
+    "chapter_id": { "type": "string" },
+    "new_entities": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/NewEntity" }
+    },
+    "operations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/AnalysisOperation" }
+    },
+    "collision_candidates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/CollisionCandidate" }
+    }
+  },
+  "$defs": {
+    "NewEntity": {
+      "type": "object",
+      "required": ["type", "name", "evidence", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "enum": ["character", "location", "artifact"] },
+        "temp_id": { "type": "string" },
+        "name": { "type": "string", "minLength": 1 },
+        "aliases": { "type": "array", "items": { "type": "string" } },
+        "summary": { "type": "string" },
+        "role": { "type": "string" },
+        "evidence": { "type": "string", "minLength": 1, "maxLength": 400 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "AnalysisOperation": {
+      "type": "object",
+      "required": ["type", "evidence", "confidence"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["update_character", "add_alias", "create_chapter_summary"]
+        },
+        "target_id": { "type": "string" },
+        "field": { "type": "string", "enum": ["summary", "role", "status"] },
+        "new_value": { "type": "string" },
+        "alias": { "type": "string" },
+        "summary": { "type": "string" },
+        "characters_present": { "type": "array", "items": { "type": "string" } },
+        "locations_present": { "type": "array", "items": { "type": "string" } },
+        "artifacts_mentioned": { "type": "array", "items": { "type": "string" } },
+        "key_events_oneline": { "type": "array", "items": { "type": "string" } },
+        "evidence": { "type": "string", "minLength": 1, "maxLength": 400 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "CollisionCandidate": {
+      "type": "object",
+      "required": [
+        "new_character",
+        "candidate",
+        "same_entity_probability",
+        "recommended_action"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "new_character": { "type": "string", "minLength": 1 },
+        "candidate": { "type": "string", "minLength": 1 },
+        "same_entity_probability": { "type": "number", "minimum": 0, "maximum": 1 },
+        "matched_features": { "type": "array", "items": { "type": "string" } },
+        "recommended_action": {
+          "type": "string",
+          "enum": ["auto_merge", "manual_review", "create_separate"]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+  "name": "BookRAG",
+  "version": "0.0.1",
+  "description": "Локальный анализ художественной литературы и справочник произведения. Без внешних API.",
+  "minimum_chrome_version": "121",
+  "action": {
+    "default_popup": "src/ui/popup/index.html",
+    "default_title": "BookRAG"
+  },
+  "background": {
+    "service_worker": "src/background/index.ts",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "src/ui/sidepanel/index.html"
+  },
+  "options_page": "src/ui/options/index.html",
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab",
+    "sidePanel",
+    "unlimitedStorage",
+    "alarms",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "https://author.today/*",
+    "https://ficbook.net/*",
+    "https://www.royalroad.com/*",
+    "https://huggingface.co/*",
+    "https://*.huggingface.co/*",
+    "https://raw.githubusercontent.com/*",
+    "http://127.0.0.1:*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://author.today/reader/*",
+        "https://ficbook.net/readfic/*",
+        "https://www.royalroad.com/fiction/*/chapter/*"
+      ],
+      "js": ["src/content/index.ts"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/ui/models/index.html", "src/offscreen/index.html", "assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  }
+}

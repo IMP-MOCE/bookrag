@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bookrag.local/schemas/reconcile-response.json",
+  "title": "ReconcileResponse",
+  "description": "Pass 2 (KbReconciler) ответ: per-entity решение match-vs-new для каждой временной сущности из Pass 1. Строгая схема: decisions — required, каждое решение — required temp_id/kind/decision/probability; candidate_id required только при decision=match (валидируется кодом, schema эту условную required не проверяет, т.к. xgrammar/jsonSchema не умеет в conditional).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decisions"],
+  "properties": {
+    "decisions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Decision" }
+    }
+  },
+  "$defs": {
+    "Decision": {
+      "type": "object",
+      "required": ["temp_id", "kind", "decision", "probability"],
+      "additionalProperties": false,
+      "properties": {
+        "temp_id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["character", "location", "artifact"] },
+        "decision": { "type": "string", "enum": ["match", "new"] },
+        "candidate_id": { "type": "string" },
+        "probability": { "type": "number", "minimum": 0, "maximum": 1 },
+        "matched_features": { "type": "array", "items": { "type": "string" } },
+        "transferable_facts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/TransferableFact" }
+        }
+      }
+    },
+    "TransferableFact": {
+      "type": "object",
+      "required": ["field", "new_value"],
+      "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string", "enum": ["summary", "role", "status"] },
+        "new_value": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
